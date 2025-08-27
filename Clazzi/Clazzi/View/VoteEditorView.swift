@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateVoteView: View {
+struct VoteEditorView: View {
   @Environment(\.dismiss) private var dismiss
   @State private var title: String = ""
   @State private var options: [String] = ["", ""]
@@ -19,8 +19,11 @@ struct CreateVoteView: View {
 
   init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void){
     self.existingVote = vote
-    _title = State(initialValue: vote?.title ?? "")
-    _options = State(initialValue: vote?.options ?? [""])
+    if let vote = vote {
+      _title = State(initialValue: vote.title)
+      _options = State(initialValue: vote.options.map { $0.name })
+    }
+    
     self.onSave = onSave
   }
   
@@ -64,8 +67,24 @@ struct CreateVoteView: View {
         
         // 생성하기 버튼
         Button(action: {
-          let vote = Vote(title: title, options: options)
-          onSave(vote)
+//          let newOptions = options.map{
+//            VoteOption(name: $0)
+//          }
+//          let vote = Vote(title: title, options: newOptions)
+//          onSave(vote)
+          if let vote = existingVote{
+            // 기존 객체를 직접 수정
+            vote.title = title
+            
+            // 기존 옵션 삭제 후 새로 생성
+            vote.options = options.map { VoteOption(name: $0) }
+            onSave(vote)
+          }else{
+            // 새 객체 생성
+            let newVote = Vote(title: title, options: options.map{ VoteOption(name: $0)})
+            onSave(newVote)
+          }
+          
           print("실행됨")
           dismiss()
         }) {
@@ -83,5 +102,5 @@ struct CreateVoteView: View {
 }
 
 #Preview {
-  CreateVoteView(){ vote in }
+  VoteEditorView(){ vote in }
 }

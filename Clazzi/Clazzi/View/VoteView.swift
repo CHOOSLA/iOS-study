@@ -31,7 +31,7 @@ struct VoteView: View {
           Button(action:{
             selectedOption = index
           }){
-            Text(vote.options[index])
+            Text(vote.options[index].name)
               .frame(maxWidth: 200)
               .padding()
               .background(index == selectedOption ? Color.green : Color.gray.opacity(0.5))
@@ -61,5 +61,8 @@ struct VoteView: View {
 }
 
 #Preview {
-  VoteView(vote: Vote(title: "오늘 점심 메뉴 추천", options: ["돈까스","짜장"]))
+  VoteView(vote: Vote(title: "오늘 점심 메뉴 추천", options: [
+    VoteOption(name: "옵션1"),
+    VoteOption(name: "옵션1")
+  ]))
 }

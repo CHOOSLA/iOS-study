@@ -52,8 +52,8 @@ struct VoteListView: View {
       ZStack {
         ScrollView{
           LazyVStack(spacing: 16){
-            ForEach(votes.indices, id: \.self){ index in
-              let vote = votes[index]
+            ForEach(votes/*.indices, id: \.self*/){ /*index*/ vote in
+//              let vote = votes[index]
               NavigationLink(destination: VoteView(vote : vote)) {
                 VoteCardView(vote: vote){
                   voteToDelete = vote
@@ -61,7 +61,6 @@ struct VoteListView: View {
                   //                  votes.remove(at: index)
                 } onEdit: {
                   voteToEdit = vote
-                  editIndex = index
                   isPresentingEdit = true
                 }
               }
@@ -106,7 +105,7 @@ struct VoteListView: View {
         }
       // 화면 이동 방법 2: 상태를 이용한 이동 방법
         .navigationDestination(isPresented: $isPresentingCreate) {
-          CreateVoteView(){ vote in
+          VoteEditorView(){ vote in
 //            votes.append(vote)
             modelContext.insert(vote)
             do{
@@ -120,9 +119,8 @@ struct VoteListView: View {
       
       // 수정화면
         .navigationDestination(isPresented: $isPresentingEdit) {
-          modelContext.model(for: PersistentIdentifier)
-          if let vote = voteToEdit, let index = editIndex{
-            CreateVoteView(vote: vote){ updatedVote in
+          if let vote = voteToEdit/*, let index = editIndex*/{
+            VoteEditorView(vote: vote){ updatedVote in
               do{
                 try modelContext.save()
               }catch{
@@ -143,7 +141,7 @@ struct VoteListView: View {
       // 삭제 ㅏㄹ러트
         .alert("투표를 삭제하시겠습니까?",isPresented: $showDeleteAlert){
           Button("삭제", role : .destructive){
-            if let target = voteToDelete, let index = votes.firstIndex(where: {$0.id == target.id}){
+            if let target = voteToDelete/*, let index = votes.firstIndex(where: {$0.id == target.id})*/{
 //              votes.remove(at: index)
               
               modelContext.delete(target)
