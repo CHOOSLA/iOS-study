@@ -15,6 +15,15 @@ struct CreateVoteView: View {
   // 투표 목록 화면에서 전달해줄 콜백 메서드
   var onSave : (Vote) -> Void
   
+  private var existingVote: Vote?
+
+  init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void){
+    self.existingVote = vote
+    _title = State(initialValue: vote?.title ?? "")
+    _options = State(initialValue: vote?.options ?? [""])
+    self.onSave = onSave
+  }
+  
   var body: some View {
     NavigationStack {
       VStack {
@@ -50,7 +59,8 @@ struct CreateVoteView: View {
             
           }
         }
-        .navigationTitle(Text("투표 생성 화면"))
+//        .navigationTitle(Text(existingVote == nil ? "투표 생성 화면" : "투표 수정 화면"))
+        .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
         
         // 생성하기 버튼
         Button(action: {
@@ -59,7 +69,7 @@ struct CreateVoteView: View {
           print("실행됨")
           dismiss()
         }) {
-          Text("생성하기")
+          Text(existingVote == nil ? "생성하기" : "수정하기")
             .frame(maxWidth: .infinity)
             .padding()
             .background(.blue)

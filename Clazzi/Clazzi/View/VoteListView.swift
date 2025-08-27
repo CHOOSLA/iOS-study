@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct VoteListView: View {
-  //  let votes = ["첫 번째 투표","두 번째 투표", "세 번째 투표"]
-  @State var votes = [
-    Vote(title: "오늘 점심 메뉴 추천", options: ["돈까스","짜장"]),
-    Vote(title: "오늘 저녁 메뉴 추천", options: ["야시장","편의점","굶기"]),
-    Vote(title: "오늘 칼바람 추천", options: ["동진","박짜장","추이가"]),
-  ]
+  @Environment(\.modelContext) private var modelContext
   
+  @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
+  
+  //  let votes = ["첫 번째 투표","두 번째 투표", "세 번째 투표"]
+//  @State var votes = [
+//    Vote(title: "오늘 점심 메뉴 추천", options: ["돈까스","짜장"]),
+//    Vote(title: "오늘 저녁 메뉴 추천", options: ["야시장","편의점","굶기"]),
+//    Vote(title: "오늘 칼바람 추천", options: ["동진","박짜장","추이가"]),
+//  ]
+//  
   
   // 투표 생성관련
   @State private var isPresentingCreate = false
@@ -25,6 +30,8 @@ struct VoteListView: View {
   
   // 투표 수정 관련
   @State private var isPresentingEdit = false
+  @State private var voteToEdit: Vote? = nil
+  @State private var editIndex: Int? = nil
   
   var body: some View {
     //    List{
@@ -53,6 +60,8 @@ struct VoteListView: View {
                   showDeleteAlert = true
                   //                  votes.remove(at: index)
                 } onEdit: {
+                  voteToEdit = vote
+                  editIndex = index
                   isPresentingEdit = true
                 }
               }
@@ -98,15 +107,30 @@ struct VoteListView: View {
       // 화면 이동 방법 2: 상태를 이용한 이동 방법
         .navigationDestination(isPresented: $isPresentingCreate) {
           CreateVoteView(){ vote in
-            votes.append(vote)
+//            votes.append(vote)
+            modelContext.insert(vote)
+            do{
+              try  modelContext.save()
+            }catch{
+              print("저장 실패: \(error)")
+            }
+           
           }
         }
       
       // 수정화면
         .navigationDestination(isPresented: $isPresentingEdit) {
-          CreateVoteView(){ vote in
-            votes.append(vote)
+          modelContext.model(for: PersistentIdentifier)
+          if let vote = voteToEdit, let index = editIndex{
+            CreateVoteView(vote: vote){ updatedVote in
+              do{
+                try modelContext.save()
+              }catch{
+                print("수정 실패 \(error)")
+              }
+            }
           }
+          
         }
       
       //        // 모달(바텀 시트)를 활용한 화면 화면 띄우는 방법(상태 이용)
@@ -120,7 +144,14 @@ struct VoteListView: View {
         .alert("투표를 삭제하시겠습니까?",isPresented: $showDeleteAlert){
           Button("삭제", role : .destructive){
             if let target = voteToDelete, let index = votes.firstIndex(where: {$0.id == target.id}){
-              votes.remove(at: index)
+//              votes.remove(at: index)
+              
+              modelContext.delete(target)
+              do{
+                try modelContext.save()
+              }catch{
+                print("수정 실패 \(error)")
+              }
             }
           }
           Button("취소",role: .cancel){}
