@@ -10,52 +10,56 @@ import SwiftUI
 struct VoteView: View {
   @Environment(\.dismiss) private var dismiss
   
-  let options = ["김치찌개", "돈까스"]
+  //  let options = ["김치찌개", "돈까스"]
   @State private var selectedOption: Int = 0
   
-    var body: some View {
-      NavigationStack {
-        VStack {
-          Spacer()
-          
-          Text("점메추 무엇???")
-            .font(.title2)
-            .fontWeight(.bold)
-            .padding(.bottom)
-          
-          ForEach(options.indices, id:\.self){ index in
-            Button(action:{
-              selectedOption = index
-            }){
-              Text(options[index])
-                .frame(maxWidth: 200)
-                .padding()
-                .background(index == selectedOption ? Color.green : Color.gray.opacity(0.5))
-                .foregroundColor(.white)
-                .clipShape(.capsule)
-            }
-          }
-          
-          Spacer()
-          
+  //  let vote: String
+  
+  let vote: Vote
+  
+  var body: some View {
+    NavigationStack {
+      VStack {
+        Spacer()
+        
+        Text(vote.title)
+          .font(.title2)
+          .fontWeight(.bold)
+          .padding(.bottom)
+        
+        ForEach(vote.options.indices, id:\.self){ index in
           Button(action:{
-            print("투표 항목은 \(options[selectedOption])입니다")
-            dismiss()
+            selectedOption = index
           }){
-            Text("투표하기")
-              .frame(maxWidth: .infinity)
+            Text(vote.options[index])
+              .frame(maxWidth: 200)
               .padding()
-              .background(Color.blue)
+              .background(index == selectedOption ? Color.green : Color.gray.opacity(0.5))
               .foregroundColor(.white)
-              .clipShape(RoundedRectangle(cornerRadius: 8))
+              .clipShape(.capsule)
           }
         }
-        .navigationTitle(Text("투표 화면"))
-        .padding()
+        
+        Spacer()
+        
+        Button(action:{
+          print("투표 항목은 \(vote.options[selectedOption])입니다")
+          dismiss()
+        }){
+          Text("투표하기")
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
       }
+      .navigationTitle(Text("투표 화면"))
+      .padding()
     }
+  }
 }
 
 #Preview {
-    VoteView()
+  VoteView(vote: Vote(title: "오늘 점심 메뉴 추천", options: ["돈까스","짜장"]))
 }
