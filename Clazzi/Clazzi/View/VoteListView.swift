@@ -195,5 +195,28 @@ struct VoteCardView: View {
 }
 
 #Preview {
-  VoteListView()
+  do{
+    let container = try ModelContainer(for: Vote.self, VoteOption.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    
+    let sampleVote1 = Vote(title: "샘플 투표 1", options: [
+      VoteOption(name: "옵션 1"),
+      VoteOption(name: "옵션 2"),
+    ])
+    
+    let sampleVote2 = Vote(title: "샘플 투표 2", options: [
+      VoteOption(name: "옵션 A"),
+      VoteOption(name: "옵션 B"),
+    ])
+    
+    container.mainContext.insert(sampleVote1)
+    container.mainContext.insert(sampleVote2)
+    
+    try container.mainContext.save()
+    
+    return VoteListView().modelContainer(container)
+  }catch {
+    fatalError("프리뷰용 ModelContainer 초기화 실패 : \(error.localizedDescription)")
+    
+  }
+  
 }
