@@ -2,7 +2,7 @@
 //  AuthView.swift
 //  Clazzi
 //
-//  Created by choosla on 8/27/25.
+//  Created by wj on 8/27/25.
 //
 
 import SwiftUI
@@ -11,15 +11,16 @@ import SwiftData
 struct AuthView: View {
   @Environment(\.modelContext) private var modelContext
   
-  @Query private var users:[User]
+  @Binding var currentUserID: UUID?
   
-  @Binding var isLoggedIn: Bool
+  @Query private var users: [User]
   
   @State private var email: String = ""
   @State private var password: String = ""
   @State private var isPrivacyAgreed: Bool = false
   @State private var isLogin: Bool = false // 처음에 회원가입 폼
   @State private var isPasswordSecured = true
+  @FocusState private var isFocused: Bool
   
   var body: some View {
     NavigationStack {
@@ -101,34 +102,36 @@ struct AuthView: View {
         
         Button(action: {
           if isLogin {
-            // 로그인한 계정을 찾는 로직을 임시로 구현
-            if let  currentUser = users.firstIndex(where: { $0.email == email && $0.password == password }) {
+            if let currentUser = users.first(where: { $0.email == email && $0.password == password}) {
               print("로그인 성공")
-              isLoggedIn = true
-            }else{
+              currentUser.
+              currentUserID = currentUser.id
+              UserDefaults.standard.set(true, forKey: "currentUserID")
+            } else {
               print("로그인 실패")
             }
-          }else {
+          } else {
             let newUser = User(email: email, password: password)
             modelContext.insert(newUser)
             do {
               try modelContext.save()
               print("회원가입 성공")
-              isLoggedIn = true
+              currentUserID = newUser.id
+              UserDefaults.standard.set(newUser.id, forKey: "currentUserID")
             } catch {
               print("회원가입 실패: \(error)")
             }
           }
-          
         }) {
           Text(isLogin ? "로그인" : "가입하기")
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color.blue)
+            .background(!email.isEmpty && !password.isEmpty && (isPrivacyAgreed || isLogin) ? Color.blue : Color.gray)
             .foregroundColor(.white)
             .cornerRadius(8)
         }
         .padding(.bottom)
+        .disabled(email.isEmpty || password.isEmpty || !(isPrivacyAgreed || isLogin))
         
         Button(isLogin ? "회원가입 화면으로" : "로그인 화면으로") {
           isLogin.toggle()
@@ -149,6 +152,20 @@ struct AuthView: View {
   }
 }
 
+//struct AuthView_Previews: PreviewProvider {
+//  struct Wrapper: View {
+//    @State var isLoggedIn: Bool = false
+//    var body: some View {
+//      AuthView(isLoggedIn: $isLoggedIn)
+//    }
+//  }
+//  static var previews: some View {
+//    Wrapper()
+//  }
+//}
+
+
 #Preview {
-//  AuthView(isLogg)
+  @Previewable @State var currentUserID: UUID? = nil
+  AuthView(currentUserID: $currentUserID)
 }

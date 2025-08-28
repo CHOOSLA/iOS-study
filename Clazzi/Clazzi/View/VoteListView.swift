@@ -11,7 +11,7 @@ import SwiftData
 struct VoteListView: View {
   @Environment(\.modelContext) private var modelContext
   
-  @Binding var isLoggedIn: Bool
+  @Binding var currentUserId: UUID?
   
   @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
   
@@ -56,7 +56,7 @@ struct VoteListView: View {
           LazyVStack(spacing: 16){
             ForEach(votes/*.indices, id: \.self*/){ /*index*/ vote in
 //              let vote = votes[index]
-              NavigationLink(destination: VoteView(vote : vote)) {
+              NavigationLink(destination: VoteView(vote : vote, currentUserId : $currentUserId)) {
                 VoteCardView(vote: vote){
                   voteToDelete = vote
                   showDeleteAlert = true
@@ -108,7 +108,7 @@ struct VoteListView: View {
           ToolbarItem(placement:
               .navigationBarTrailing) {
                 NavigationLink(destination:
-                                MyPageView(isLoggedIn: $isLoggedIn)) {
+                                MyPageView(currentUserId: $currentUserId)) {
                   Image(systemName: "person")
                 }
               }
@@ -201,6 +201,45 @@ struct VoteCardView: View {
     .cornerRadius(12)
     .foregroundColor(.white)
     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y:2)
+  }
+}
+
+struct VoteListView_Previews: PreviewProvider {
+  struct Wrapper: View {
+    @State var currentUserId: UUID? = UUID(uuidString : "이건가짜")
+    
+    let container: ModelContainer = {
+      let schema = Schema([Vote.self, VoteOption.self])
+      let config = ModelConfiguration(isStoredInMemoryOnly: true)
+      let container = try! ModelContainer(
+        for: schema, configurations: [config]
+      )
+      
+      // 더미 데이터
+      let context = container.mainContext
+      // 샘플 데이터 추가
+      let sampleVote1 = Vote(title: "샘플 투표 1", options: [
+        VoteOption(name: "옵션 1"),
+        VoteOption(name: "옵션 2"),
+      ])
+      
+      let sampleVote2 = Vote(title: "샘플 투표 2", options: [
+        VoteOption(name: "옵션 A"),
+        VoteOption(name: "옵션 B"),
+      ])
+      context.insert(sampleVote1)
+      context.insert(sampleVote2)
+      
+      return container
+    }()
+    
+    var body: some View {
+      VoteListView(currentUserId: $currentUserId)
+        .modelContainer(container)
+    }
+  }
+  static var previews: some View {
+    Wrapper()
   }
 }
 

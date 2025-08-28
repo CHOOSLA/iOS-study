@@ -17,6 +17,8 @@ struct VoteView: View {
   
   let vote: Vote
   
+  @Binding var currentUserId: UUID?
+  
   var body: some View {
     NavigationStack {
       VStack {
@@ -42,9 +44,13 @@ struct VoteView: View {
         
         Spacer()
         
+        // 투표하기
         Button(action:{
-          print("투표 항목은 \(vote.options[selectedOption])입니다")
-          dismiss()
+          print("투표 항목은 \(vote.options[selectedOption].name)입니다")
+          if let currentUserId = currentUserId {
+            vote.options[selectedOption].voters.append(currentUserId)
+          }
+//          dismiss()
         }){
           Text("투표하기")
             .frame(maxWidth: .infinity)
@@ -61,8 +67,9 @@ struct VoteView: View {
 }
 
 #Preview {
+  @Previewable @State var currentUserId: UUID? = UUID(uuidString: "이건 가짜 계정")
   VoteView(vote: Vote(title: "오늘 점심 메뉴 추천", options: [
     VoteOption(name: "옵션1"),
     VoteOption(name: "옵션1")
-  ]))
+  ]), currentUserId: $currentUserId)
 }

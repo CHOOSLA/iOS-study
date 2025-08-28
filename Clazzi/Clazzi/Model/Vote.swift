@@ -25,8 +25,17 @@ class Vote{
 @Model
 class VoteOption{
   var name: String
+  var voters: [UUID] = [] // 여기에 투표자 ID 저장
   
   init(name: String){
     self.name = name
+  }
+  
+  var votes:Int{ // 투표자 수
+    voters.count
+  }
+  
+  func hasVoted(userId: UUID) -> Bool { // 투표했는지 판단
+    voters.contains(userId)
   }
 }
