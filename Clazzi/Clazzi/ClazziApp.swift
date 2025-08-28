@@ -44,7 +44,7 @@ struct ClazziApp: App {
       if currentUserId != nil {
         VoteListView(currentUserId : $currentUserId)
       } else {
-        AuthView(currentUserID : $currentUserId)
+        AuthView(currentUserId : $currentUserId)
       }
     }
     .modelContainer(shaerdModelConatiner)

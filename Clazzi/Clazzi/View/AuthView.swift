@@ -2,7 +2,7 @@
 //  AuthView.swift
 //  Clazzi
 //
-//  Created by wj on 8/27/25.
+//  Created by choosla on 8/27/25.
 //
 
 import SwiftUI
@@ -11,16 +11,17 @@ import SwiftData
 struct AuthView: View {
   @Environment(\.modelContext) private var modelContext
   
-  @Binding var currentUserID: UUID?
+  @Query private var users:[User]
   
-  @Query private var users: [User]
+//  @Binding var isLoggedIn: Bool
+  @Binding var currentUserId : UUID?
   
   @State private var email: String = ""
   @State private var password: String = ""
   @State private var isPrivacyAgreed: Bool = false
   @State private var isLogin: Bool = false // 처음에 회원가입 폼
   @State private var isPasswordSecured = true
-  @FocusState private var isFocused: Bool
+
   
   var body: some View {
     NavigationStack {
@@ -102,31 +103,33 @@ struct AuthView: View {
         
         Button(action: {
           if isLogin {
-            if let currentUser = users.first(where: { $0.email == email && $0.password == password}) {
+            // 로그인한 계정을 찾는 로직을 임시로 구현
+            if let currentUser = users.first(where: { $0.email == email && $0.password == password }) {
               print("로그인 성공")
-              currentUser.
-              currentUserID = currentUser.id
-              UserDefaults.standard.set(true, forKey: "currentUserID")
-            } else {
+              currentUserId = currentUser.id
+              
+              UserDefaults.standard.set(currentUser.id.uuidString, forKey: "currentUserId")
+            }else{
               print("로그인 실패")
             }
-          } else {
+          }else {
             let newUser = User(email: email, password: password)
             modelContext.insert(newUser)
             do {
               try modelContext.save()
               print("회원가입 성공")
-              currentUserID = newUser.id
-              UserDefaults.standard.set(newUser.id, forKey: "currentUserID")
+              UserDefaults.standard.set(newUser.id.uuidString, forKey: "currentUserId")
+              currentUserId = newUser.id
             } catch {
               print("회원가입 실패: \(error)")
             }
           }
+          
         }) {
           Text(isLogin ? "로그인" : "가입하기")
             .frame(maxWidth: .infinity)
             .padding()
-            .background(!email.isEmpty && !password.isEmpty && (isPrivacyAgreed || isLogin) ? Color.blue : Color.gray)
+            .background(!email.isEmpty && !password.isEmpty && (isPrivacyAgreed || isLogin) ?Color.blue : Color.gray)
             .foregroundColor(.white)
             .cornerRadius(8)
         }
@@ -166,6 +169,7 @@ struct AuthView: View {
 
 
 #Preview {
-  @Previewable @State var currentUserID: UUID? = nil
-  AuthView(currentUserID: $currentUserID)
+//  @Previewable @State var isLoggedIn: Bool = false
+  @Previewable @State var currentUserId: UUID? = UUID(uuidString: "이건 가짜 계정")
+  AuthView(currentUserId: $currentUserId)
 }
