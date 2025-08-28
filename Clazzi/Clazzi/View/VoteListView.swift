@@ -11,6 +11,8 @@ import SwiftData
 struct VoteListView: View {
   @Environment(\.modelContext) private var modelContext
   
+  @Binding var isLoggedIn: Bool
+  
   @Query(sort: \Vote.title, order: .forward) private var votes: [Vote]
   
   //  let votes = ["첫 번째 투표","두 번째 투표", "세 번째 투표"]

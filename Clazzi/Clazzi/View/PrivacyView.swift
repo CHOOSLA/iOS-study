@@ -81,7 +81,10 @@ struct PrivacyView: View {
           •    연락처: support@yourapp.com / 02-1234-5678
           •    주소: 서울특별시 ○○구 ○○로 123, ○○빌딩 ○층
           """)
+          .multilineTextAlignment(.leading)
+          .padding()
         }
+        .navigationTitle(Text("개인정보 처리 방침"))
       }
     }
 }
