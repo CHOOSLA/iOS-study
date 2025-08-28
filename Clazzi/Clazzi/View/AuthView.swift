@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AuthView: View {
   @Environment(\.modelContext) private var modelContext
+  
+  @Query private var users:[User]
   
   @Binding var isLoggedIn: Bool
   
@@ -97,15 +100,26 @@ struct AuthView: View {
         
         
         Button(action: {
-          let newUser = User(email: email, password: password)
-          modelContext.insert(newUser)
-          do {
-            try modelContext.save()
-            print("회원가입 성공")
-            isLoggedIn = true
-          } catch {
-            print("회원가입 실패: \(error)")
+          if isLogin {
+            // 로그인한 계정을 찾는 로직을 임시로 구현
+            if let  currentUser = users.firstIndex(where: { $0.email == email && $0.password == password }) {
+              print("로그인 성공")
+              isLoggedIn = true
+            }else{
+              print("로그인 실패")
+            }
+          }else {
+            let newUser = User(email: email, password: password)
+            modelContext.insert(newUser)
+            do {
+              try modelContext.save()
+              print("회원가입 성공")
+              isLoggedIn = true
+            } catch {
+              print("회원가입 실패: \(error)")
+            }
           }
+          
         }) {
           Text(isLogin ? "로그인" : "가입하기")
             .frame(maxWidth: .infinity)
