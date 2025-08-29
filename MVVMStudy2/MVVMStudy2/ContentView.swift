@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  MVVMStudy
+//  MVVMStudy2
 //
 //  Created by choosla on 8/29/25.
 //
