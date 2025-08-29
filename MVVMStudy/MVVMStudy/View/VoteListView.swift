@@ -10,7 +10,6 @@ import SwiftUI
 struct VoteListView: View {
   @StateObject private var viewModel = VoteListViewModel()
   @State private var showingEditorCreate = false
-  @State private var showingEditorEdit = false
   
   @State private var voteForEdit: Vote?
   var body: some View {
@@ -23,43 +22,46 @@ struct VoteListView: View {
             Button(action: {
               print(vote.title)
               voteForEdit = vote
-              showingEditorEdit = true
             }){
               Image(systemName: "pencil")
             }
           }
         }
+        .onDelete { IndexSet in
+          viewModel.deleteVote(id: viewModel.votes[IndexSet.first!].id)
+        }
       }
       .navigationTitle("투표 목록")
       .toolbar{
-        ToolbarItem(){
-          Button(action : {
-            
-            showingEditorCreate = true
-//            viewModel.addVote(Vote(id: UUID(), title: "새로운 투표", options: ["항목1"]))
-          }){
-            Image(systemName: "plus")
-          }
+        
+        Button(action : {
+          
+          showingEditorCreate = true
+          //            viewModel.addVote(Vote(id: UUID(), title: "새로운 투표", options: ["항목1"]))
+        }){
+          Image(systemName: "plus")
         }
+        EditButton()
       }
+      
+      
       .sheet(isPresented: $showingEditorCreate) {
         VoteEditorView(viewModel: VoteEditorViewModel()) { newVote in
-//          if let vote = newVote{
-//            viewModel.addVote(vote)
-//          }
-          print("VoteListView에 해당 Vote를 추가")
+          //          if let vote = newVote{
+          //            viewModel.addVote(vote)
+          //          }
+          print("VoteListView에 해당 Voteㅈ")
           viewModel.addVote(newVote)
-          print("newVote : \(newVote.title)")
         }
       }
-      .sheet(isPresented: $showingEditorEdit) {
+      .sheet(item: $voteForEdit) { item in
         // 기존의 뷰모델을 줘야함
-        VoteEditorView(viewModel: VoteEditorViewModel(vote: voteForEdit)) { updateVote in
+        VoteEditorView(viewModel: VoteEditorViewModel(vote: item)) { updateVote in
           //          if let vote = newVote{
           //            viewModel.addVote(vote)
           //          }
           
-          viewModel.addVote(updateVote)
+          viewModel.updateVote(updateVote)
         }
       }
     }

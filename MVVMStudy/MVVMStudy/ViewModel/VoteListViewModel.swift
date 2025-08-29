@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUICore
 
 class VoteListViewModel: ObservableObject{
   @Published var votes:[Vote] = []

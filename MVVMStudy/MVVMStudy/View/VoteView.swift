@@ -1,13 +1,18 @@
-////
-////  VoteView.swift
-////  MVVMStudy
-////
-////  Created by choosla on 8/29/25.
-////
 //
-//import SwiftUI
+//  VoteView.swift
+//  MVVMStudy
 //
-//struct VoteView: View {
+//  Created by choosla on 8/29/25.
+//
+
+import SwiftUI
+
+struct VoteView: View {
+  @ObservedObject var viewModel: VoteViewModel
+  
+  var body: some View {
+    
+  }
 //  // @State : 간단한 값의 상태 속성 래퍼. 구조체로 되어있는 것들은 @State를 붙여준다.
 //  @State var text: String = "원래 텍스트"
 //  // @StateObject : 클래스ㅗㄹ 되어있는 것들ㅇ느 @StateObject를 붙여준다.
@@ -37,36 +42,36 @@
 //    }
 //    
 //  }
-//}
-//
-//struct ChildView: View {
-//  @Binding var text: String
-//  @ObservedObject var viewModel: VoteViewModel
-//  var body: some View {
-//    Text("childView")
-//    Text(text)
-//    Text(viewModel.vote.title)
-//    Button("수정"){
-//      text = "새로운 텍스트"
-//      viewModel.vote.title = "새로운 뷰모델 투표 제목"
-//    }
-//  }
-//}
-//
-//struct SecondView: View {
-//  @Binding var text: String
-//  @ObservedObject var viewModel: VoteViewModel
-//  var body: some View {
-//    Text("SecondView")
-//    Text(text)
-//    Text(viewModel.vote.title)
-//    Button("수정"){
-//      text = "새로운 텍스트"
-//      viewModel.vote.title = "새로운 뷰모델 투표 제목"
-//    }
-//  }
-//}
-//
-//#Preview {
-//  VoteView()
-//}
+}
+
+struct ChildView: View {
+  @Binding var text: String
+  @ObservedObject var viewModel: VoteViewModel
+  var body: some View {
+    Text("childView")
+    Text(text)
+    Text(viewModel.vote.title)
+    Button("수정"){
+      text = "새로운 텍스트"
+      viewModel.vote.title = "새로운 뷰모델 투표 제목"
+    }
+  }
+}
+
+struct SecondView: View {
+  @Binding var text: String
+  @ObservedObject var viewModel: VoteViewModel
+  var body: some View {
+    Text("SecondView")
+    Text(text)
+    Text(viewModel.vote.title)
+    Button("수정"){
+      text = "새로운 텍스트"
+      viewModel.vote.title = "새로운 뷰모델 투표 제목"
+    }
+  }
+}
+
+#Preview {
+  VoteView(viewModel : VoteViewModel(vote: Vote(title: "테스트 투표",options: [])))
+}
