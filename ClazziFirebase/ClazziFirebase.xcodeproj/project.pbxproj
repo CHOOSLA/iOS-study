@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		842A4CF72E653A4000244710 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 842A4CF62E653A4000244710 /* FirebaseAnalytics */; };
+		842A4CF92E653A4000244710 /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 842A4CF82E653A4000244710 /* FirebaseAnalyticsIdentitySupport */; };
+		842A4CFB2E653A4000244710 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 842A4CFA2E653A4000244710 /* FirebaseFirestore */; };
+		842A4CFD2E653A4000244710 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 842A4CFC2E653A4000244710 /* FirebaseStorage */; };
+		842A4CFF2E653B3500244710 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 842A4CFE2E653B3500244710 /* FirebaseAuth */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		842A4CC82E65371500244710 /* ClazziFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClazziFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +31,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				842A4CF92E653A4000244710 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
+				842A4CFF2E653B3500244710 /* FirebaseAuth in Frameworks */,
+				842A4CFD2E653A4000244710 /* FirebaseStorage in Frameworks */,
+				842A4CF72E653A4000244710 /* FirebaseAnalytics in Frameworks */,
+				842A4CFB2E653A4000244710 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +78,11 @@
 			);
 			name = ClazziFirebase;
 			packageProductDependencies = (
+				842A4CF62E653A4000244710 /* FirebaseAnalytics */,
+				842A4CF82E653A4000244710 /* FirebaseAnalyticsIdentitySupport */,
+				842A4CFA2E653A4000244710 /* FirebaseFirestore */,
+				842A4CFC2E653A4000244710 /* FirebaseStorage */,
+				842A4CFE2E653B3500244710 /* FirebaseAuth */,
 			);
 			productName = ClazziFirebase;
 			productReference = 842A4CC82E65371500244710 /* ClazziFirebase.app */;
@@ -94,6 +112,9 @@
 			);
 			mainGroup = 842A4CBF2E65371500244710;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 842A4CC92E65371500244710 /* Products */;
 			projectDirPath = "";
@@ -324,6 +345,45 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		842A4CF62E653A4000244710 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		842A4CF82E653A4000244710 /* FirebaseAnalyticsIdentitySupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsIdentitySupport;
+		};
+		842A4CFA2E653A4000244710 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		842A4CFC2E653A4000244710 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		842A4CFE2E653B3500244710 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 842A4CF52E653A4000244710 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 842A4CC02E65371500244710 /* Project object */;
 }

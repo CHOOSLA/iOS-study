@@ -7,14 +7,10 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseAuth
 
 struct AuthView: View {
-  @Environment(\.modelContext) private var modelContext
-  
-  @Query private var users:[User]
-  
-//  @Binding var isLoggedIn: Bool
-  @Binding var currentUserId : UUID?
+  @Binding var currentUser : FirebaseAuth.User?
   
   @State private var email: String = ""
   @State private var password: String = ""
@@ -102,29 +98,9 @@ struct AuthView: View {
         
         
         Button(action: {
-          if isLogin {
-            // 로그인한 계정을 찾는 로직을 임시로 구현
-            if let currentUser = users.first(where: { $0.email == email && $0.password == password }) {
-              print("로그인 성공")
-              currentUserId = currentUser.id
-              
-              UserDefaults.standard.set(currentUser.id.uuidString, forKey: "currentUserId")
-            }else{
-              print("로그인 실패")
-            }
-          }else {
-            let newUser = User(email: email, password: password)
-            modelContext.insert(newUser)
-            do {
-              try modelContext.save()
-              print("회원가입 성공")
-              UserDefaults.standard.set(newUser.id.uuidString, forKey: "currentUserId")
-              currentUserId = newUser.id
-            } catch {
-              print("회원가입 실패: \(error)")
-            }
+          Task{
+            await preformAuth()
           }
-          
         }) {
           Text(isLogin ? "로그인" : "가입하기")
             .frame(maxWidth: .infinity)
@@ -153,24 +129,22 @@ struct AuthView: View {
       }
     }
   }
+  
+  // Firebase Auth 로그인/회원가입 함수
+  private func preformAuth() async {
+    do{
+      if isLogin { // 로그인 일 때
+        let result = try await Auth.auth().signIn(withEmail: email, password: password)
+        currentUser = result.user
+        print("Firebase 로그인 성공")
+      } else {
+        let result = try await Auth.auth().createUser(withEmail: email, password: password)
+        currentUser = result.user
+        print("Firebase 회원가입 성공")
+      }
+    } catch {
+      print("Firebase Auth 오류 : \(error.localizedDescription)")
+    }
+  }
 }
 
-//struct AuthView_Previews: PreviewProvider {
-//  struct Wrapper: View {
-//    @State var isLoggedIn: Bool = false
-//    var body: some View {
-//      AuthView(isLoggedIn: $isLoggedIn)
-//    }
-//  }
-//  static var previews: some View {
-//    Wrapper()
-//  }
-//}
-
-
-#Preview {
-//  @Previewable @State var isLoggedIn: Bool = false
-//  @Previewable @State var currentUserId: UUID? = UUID(uuidString: "이건 가짜 계정")
-  @Previewable @State var currentUserId: UUID? = nil
-  AuthView(currentUserId: $currentUserId)
-}

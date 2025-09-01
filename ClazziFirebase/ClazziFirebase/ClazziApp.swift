@@ -6,45 +6,41 @@
 //
 
 import SwiftUI
-import SwiftData
+import FirebaseCore
+import FirebaseAuth
 
 @main
 struct ClazziFirebaseApp: App {
   // 로그인 상태
-  @State var isLoggedIn: Bool = false
+  @State var currentUser : FirebaseAuth.User? = nil
   
-  // 로그인 상태
-  //    @State var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
-  @State var currentUserId: UUID? = {
-    if let idString = UserDefaults.standard.string(forKey: "currentUserID"), let id = UUID(uuidString: idString){
-      return id
-    }
-    
-    return nil
-  }()
+  // 인트로 화면 상태
+  @State private var isLoading = true
   
-  // 스위프트 데이터 컨테이너
-  var shaerdModelConatiner: ModelContainer = {
-    let schema = Schema([
-      Vote.self,
-      VoteOption.self,
-      User.self
-    ])
-    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-    do{
-      return try ModelContainer(for: schema, configurations: [modelConfiguration])
-    } catch {
-      fatalError("모델 컨테이너를 생성하지 못했습니다. \(error)")
-    }
-  }()
+  init(){
+    FirebaseApp.configure()
+  }
+  
   var body: some Scene {
     WindowGroup {
-      if currentUserId != nil {
-        VoteListView(currentUserId : $currentUserId)
-      } else {
-        AuthView(currentUserId : $currentUserId)
+      Group{
+        if isLoading{
+//          ProgressView("인트로 화면...")
+          IntroView()
+        }else if currentUser != nil {
+          VoteListView(currentUser : $currentUser)
+        } else {
+          AuthView(currentUser : $currentUser)
+        }
       }
+      .onAppear{
+        Task {
+          try await Task.sleep(nanoseconds: 2_000_000_000) // 2초
+          currentUser = Auth.auth().currentUser
+          isLoading = false
+        }
+      }
+      
     }
-    .modelContainer(shaerdModelConatiner)
   }
 }

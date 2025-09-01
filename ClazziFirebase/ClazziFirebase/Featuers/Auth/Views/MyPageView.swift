@@ -7,25 +7,23 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseAuth
 
 struct MyPageView: View {
-  @Environment(\.modelContext) private var modelContext
-  @Query private var users: [User]
-  @Binding var currentUserId: UUID?
+  @Binding var currentUser: FirebaseAuth.User?
   
   var body: some View {
     NavigationStack{
       VStack(spacing: 32){
-        if let user = users.first(where: { $0.id == currentUserId }) {
+        if let currentUser = currentUser {
           Spacer()
           Text("로그인 된 이메일: ")
-          Text(user.email)
+          Text(currentUser.email ?? "사용자 메일이 없습니다")
       
           Button(action: {
-            //          isLoggedIn = false
-            //          UserDefaults.standard.set(false, forKey: "isLoggedIn")
-            currentUserId = nil
-            UserDefaults.standard.removeObject(forKey: "currentUserId")
+            // 로그아웃
+            try? Auth.auth().signOut()
+            self.currentUser = nil
           }) {
             Text("로그아웃")
               .frame(maxWidth: .infinity)
@@ -48,43 +46,3 @@ struct MyPageView: View {
   }
 }
 
-//struct MyPageView_Previews: PreviewProvider {
-//  struct Wrapper: View {
-//    @State var isLoggedIn: Bool = false
-//    var body: some View {
-//      MyPageView(isLoggedIn: $isLoggedIn)
-//    }
-//  }
-//  static var previews: some View {
-//    Wrapper()
-//  }
-//}
-
-//#Preview {
-////  @Previewable @State var isLoggedIn: Bool = false
-//  @Previewable @State var currentUserId: UUID? = UUID(uuidString: "이건 가짜 계정")
-//  MyPageView(currentUserId: $currentUserId)
-//}
-
-#Preview {
-  @Previewable @State var currentUserId: UUID? = nil
-  
-  // 1. 컨테이너 만들기
-  let container = try! ModelContainer(
-    for: User.self,
-    configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-  )
-  
-  // 2. 가짜 사용자 추가
-  let context = container.mainContext
-  let fakeUser = User(email: "text@exmaple.com" , password: "1234")
-  context.insert(fakeUser)
-  
-  // 3. 뷰에 연결
-  return MyPageView(currentUserId: $currentUserId)
-    .modelContainer(container)
-    .onAppear {
-      // 4. MyPageView가 렌더링 된 후 ID를 프리뷰 상태에 세팅
-      currentUserId = fakeUser.id
-    }
-}
