@@ -30,7 +30,7 @@ struct Vote: Identifiable, Codable{
 struct VoteOption: Identifiable, Codable{
   @DocumentID var id: String?
   var name: String
-  var voters: [UUID] = [] // 여기에 투표자 ID 저장
+  var voters: [String] = [] // 여기에 투표자 ID 저장
   
   init(name: String){
     self.id = nil

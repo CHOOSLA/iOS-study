@@ -48,7 +48,7 @@ class VoteViewModel: ObservableObject{
     guard let voteId = vote.id else { return }
     
     do{
-      try db.collection("votes").document(vote.id!).setData(from: vote)
+      try db.collection("votes").document(voteId).setData(from: vote)
       print("수정 성공")
     } catch {
       print("Firestore 수정 실패 : \(error)")
@@ -58,14 +58,14 @@ class VoteViewModel: ObservableObject{
   // 투표 삭제
   func deleteVote(_ vote: Vote){
     guard let voteId = vote.id else { return }
-    do{
-      try db.collection("votes").document(voteId).delete() { error in
-        if let error = error {
-          print("투표 삭제 실패 : \(error)")
-        } else {
-          print("투표 삭제 성공")
-        }
+    
+    db.collection("votes").document(voteId).delete() { error in
+      if let error = error {
+        print("투표 삭제 실패 : \(error)")
+      } else {
+        print("투표 삭제 성공")
       }
     }
+    
   }
 }

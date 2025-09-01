@@ -9,23 +9,22 @@ import SwiftUI
 
 struct VoteEditorView: View {
   @Environment(\.dismiss) private var dismiss
-  @State private var title: String/* = ""*/
-  @State private var options: [String]/* = ["", ""]*/
+  @State private var title: String
+  @State private var options: [String]
+  
+  @EnvironmentObject private var session: UserSession
   
   // 투표 목록 화면에서 전달해줄 콜백 메서드
   var onSave : (Vote) -> Void
+
   
-  private var existingVote: Vote?
+  private var vote: Vote? = nil
 
   init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void){
-    self.existingVote = vote
-//    if let vote = vote {
-//      _title = State(initialValue: vote.title)
-//      _options = State(initialValue: vote.options.map { $0.name })
-//    }
     self.onSave = onSave
     self.title = vote?.title ?? ""
     self.options = vote?.options.map{$0.name} ?? ["",""]
+    self.vote = vote
   }
   
   var body: some View {
@@ -63,8 +62,7 @@ struct VoteEditorView: View {
             
           }
         }
-//        .navigationTitle(Text(existingVote == nil ? "투표 생성 화면" : "투표 수정 화면"))
-        .navigationTitle(Text("투표 \(existingVote == nil ? "생성" : "수정") 화면"))
+        .navigationTitle(Text("투표 \(vote == nil ? "생성" : "수정") 화면"))
         
         // 생성하기 버튼
         Button(action: {
@@ -73,7 +71,7 @@ struct VoteEditorView: View {
 //          }
 //          let vote = Vote(title: title, options: newOptions)
 //          onSave(vote)
-          if let vote = existingVote{
+          if var vote = vote{
             // 기존 객체를 직접 수정
             vote.title = title
             
@@ -82,14 +80,14 @@ struct VoteEditorView: View {
             onSave(vote)
           }else{
             // 새 객체 생성
-            let newVote = Vote(title: title, options: options.map{ VoteOption(name: $0)})
+            let newVote = Vote(title: title,createdBy: session.user?.uid ?? "", options: options.map{ VoteOption(name: $0)})
             onSave(newVote)
           }
           
           print("실행됨")
           dismiss()
         }) {
-          Text(existingVote == nil ? "생성하기" : "수정하기")
+          Text(vote == nil ? "생성하기" : "수정하기")
             .frame(maxWidth: .infinity)
             .padding()
             .background(.blue)
@@ -102,23 +100,23 @@ struct VoteEditorView: View {
   }
 }
 
-#Preview("투표 생성") {
-  VoteEditorView() { _ in }
-}
-
-#Preview("투표 수정"){
-  // 샘플 투표 생성
-  let sampleVote = Vote(title: "샘플 투표", options: [
-    VoteOption(name: "옵션 1"),
-    VoteOption(name: "옵션 2")
-  ])
-  
-  // 뷰에 샘플로 전달
-  VoteEditorView(vote: sampleVote) { vote in
-    print("변경된 투표: \(vote)")
-  }
-}
-
-//#Preview {
-//  VoteEditorView(){ vote in }
+//#Preview("투표 생성") {
+//  VoteEditorView() { _ in }
 //}
+//
+//#Preview("투표 수정"){
+//  // 샘플 투표 생성
+//  let sampleVote = Vote(title: "샘플 투표", options: [
+//    VoteOption(name: "옵션 1"),
+//    VoteOption(name: "옵션 2")
+//  ])
+//  
+//  // 뷰에 샘플로 전달
+//  VoteEditorView(vote: sampleVote) { vote in
+//    print("변경된 투표: \(vote)")
+//  }
+//}
+//
+////#Preview {
+////  VoteEditorView(){ vote in }
+////}

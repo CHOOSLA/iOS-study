@@ -27,7 +27,7 @@ struct ClazziFirebaseApp: App {
         if isLoading{
 //          ProgressView("인트로 화면...")
           IntroView()
-        }else if session.user != nil {
+        }else if session.user == nil {
           AuthView()
         } else {
           VoteListView()

@@ -39,7 +39,7 @@ struct VoteListView: View {
         // 투표 생성
         ToolbarItem(placement: .navigationBarTrailing) {
           NavigationLink(destination: VoteEditorView { newVote in
-            modelContext.insert(newVote)
+            voteViewModel.createVote(newVote)
           }) {
             Image(systemName: "plus")
           }
@@ -55,7 +55,7 @@ struct VoteListView: View {
       .navigationDestination(isPresented: $isPresentingEdit) {
         if let vote = voteToEdit {
           VoteEditorView(vote: vote) { updatedVote in
-            
+            voteViewModel.updateVote(updatedVote)
           }
         }
       }
@@ -63,7 +63,7 @@ struct VoteListView: View {
       .alert("투표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
         Button("삭제", role: .destructive) {
           if let vote = voteToDelete {
-            modelContext.delete(vote)
+            voteViewModel.deleteVote(vote)
             voteToDelete = nil
           }
         }
