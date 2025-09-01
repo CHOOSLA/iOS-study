@@ -50,3 +50,28 @@ struct ClazziApp: App {
     .modelContainer(shaerdModelConatiner)
   }
 }
+
+
+#Preview{
+  // 로그인 상태
+  // @Previewable : 프리뷰 전용 속성 표시자
+  // - 주로 @State, @ObservedObject, #environmentObject 앞에 붙여서 쓴다.
+  @Previewable @State var currnetUserID: UUID? = {
+    if let idString = UserDefaults.standard.string(forKey: "currnetUserId"),
+        let id = UUID(uuidString: idString){
+      return id
+    }
+    
+    return nil
+  }()
+  
+  // Group : 아무런 UI적 요소가 없는 뷰. 어떤 뷰를 묶어 공통으로 속성 주고 싶을 때 사욯나다. (vs. Box)
+  Group{
+    if currnetUserID == nil{
+      AuthView(currentUserId: $currnetUserID)
+    }else{
+      VoteListView(currentUserId: $currnetUserID)
+    }
+  }
+  .modelContainer(for: [User.self, Vote.self, VoteOption.self])
+}
