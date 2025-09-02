@@ -18,9 +18,22 @@
 		842A4CC82E65371500244710 /* ClazziFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClazziFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		847121022E66B80100BE0E61 /* Exceptions for "ClazziFirebase" folder in "ClazziFirebase" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 842A4CC72E65371500244710 /* ClazziFirebase */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		842A4CCA2E65371500244710 /* ClazziFirebase */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				847121022E66B80100BE0E61 /* Exceptions for "ClazziFirebase" folder in "ClazziFirebase" target */,
+			);
 			path = ClazziFirebase;
 			sourceTree = "<group>";
 		};
@@ -277,6 +290,9 @@
 				DEVELOPMENT_TEAM = B647XZ9AYA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClazziFirebase/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "클래찌";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앨범에서 사진을 불러오기 위해 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -305,6 +321,9 @@
 				DEVELOPMENT_TEAM = B647XZ9AYA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClazziFirebase/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "클래찌";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "앨범에서 사진을 불러오기 위해 접근 권한이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

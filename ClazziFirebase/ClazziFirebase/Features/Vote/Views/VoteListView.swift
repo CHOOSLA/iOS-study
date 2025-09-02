@@ -22,7 +22,10 @@ struct VoteListView: View {
         LazyVStack(spacing: 16) {
           ForEach(voteViewModel.votes) { vote in
             NavigationLink(destination: VoteView(vote: vote) { vote in
-              voteViewModel.updateVote(vote)}) {
+              
+              Task{
+                await voteViewModel.updateVote(vote)}
+              }) {
                 VoteCardView(vote: vote) {
                   voteToDelete = vote
                   showDeleteAlert = true
@@ -39,24 +42,28 @@ struct VoteListView: View {
       .toolbar {
         // 투표 생성
         ToolbarItem(placement: .navigationBarTrailing) {
-          NavigationLink(destination: VoteEditorView { newVote in
-            voteViewModel.createVote(newVote)
+          NavigationLink(destination: VoteEditorView { newVote, selectedImage in
+            Task{
+             await voteViewModel.createVote(newVote, image: selectedImage)
+            }
           }) {
             Image(systemName: "plus")
           }
         }
-        // 마이페이지
-        ToolbarItem(placement: .navigationBarTrailing) {
-          NavigationLink(destination: MyPageView()) {
-            Image(systemName: "person")
-          }
-        }
+//        // 마이페이지
+//        ToolbarItem(placement: .navigationBarTrailing) {
+//          NavigationLink(destination: MyPageView()) {
+//            Image(systemName: "person")
+//          }
+//        }
       }
       // 수정화면 띄우기
       .navigationDestination(isPresented: $isPresentingEdit) {
         if let vote = voteToEdit {
-          VoteEditorView(vote: vote) { updatedVote in
-            voteViewModel.updateVote(updatedVote)
+          VoteEditorView(vote: vote) { updatedVote, selectedImage in
+            Task{
+              await voteViewModel.updateVote(vote, image: selectedImage)
+            }
           }
         }
       }

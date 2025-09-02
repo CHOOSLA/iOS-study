@@ -17,13 +17,15 @@ struct Vote: Identifiable, Codable{
   var createdBy: String
   var createdAt: Date
   var options: [VoteOption]
+  var imageURL: String?
   
-  init(title: String, createdBy: String, options: [VoteOption] = []){
+  init(title: String, createdBy: String, options: [VoteOption] = [], imageURL: String? = nil){
     self.id = nil
     self.title = title
     self.options = options
     self.createdBy = createdBy
     self.createdAt = Date()
+    self.imageURL = imageURL
   }
 }
 

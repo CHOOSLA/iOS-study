@@ -61,6 +61,20 @@ struct VoteView: View {
             .fontWeight(.bold)
             .padding(.bottom)
           
+          // 이미지뷰
+          if let imageURL = vote.imageURL, let url = URL(string: imageURL) {
+            AsyncImage(url: url){ image in
+              image.resizable().scaledToFill()
+            } placeholder: {
+              ProgressView()
+            }
+            .frame(width: 150, height: 150)
+            .clipShape(Circle())
+            .shadow(radius: 4)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.bottom, 32)
+          }
+          
           ForEach(vote.options.indices, id: \.self) { index in
             Button(action: {
                
