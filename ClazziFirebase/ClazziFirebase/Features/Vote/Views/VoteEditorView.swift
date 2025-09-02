@@ -142,7 +142,10 @@ struct VoteEditorView: View {
               vote.title = title
               
               // 기존 옵션 삭제 후 새로 생성
-              vote.options = options.map { VoteOption(name: $0) }
+//              vote.options = options.map { VoteOption(name: $0) }
+              vote.options = options.enumerated().map{ index, option in
+                VoteOption(name: option, voters: vote.options[index].voters)
+              }
               onSave(vote, selectedImage)
             }else{
               // 새 객체 생성

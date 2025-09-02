@@ -12,6 +12,8 @@ import FirebaseStorage
 // @MainActor : 비동기 처리 후 메인스레드(UI스레드)에  동기화 해주기 위해 붙여준다.
 @MainActor // 클래스나 구조체에 붙이는 어노테이션은 어트리뷰트라고 한다.
 class VoteViewModel: ObservableObject{
+  // @Published : 값이 변경될 뷰에 알린다.
+  // ObserableObject : 변경을 알림
   @Published var votes: [Vote] = []
   
   private let db = Firestore.firestore()
@@ -25,6 +27,10 @@ class VoteViewModel: ObservableObject{
   func fetchVotes() {
     db.collection("votes")
       .order(by: "createdAt", descending: true)
+                            // [ weak self ] : 메모리 누수를 방지하기 위해!
+    // appSnapsotListener : 파이어스토어 실시간 데이터 동기화
+    // getDocuments : 한번 실행할 때만 데이터 가져온다.
+    
       .addSnapshotListener{ [ weak self ]snapshot, _ in
         Task { @MainActor in
           self?.votes = snapshot?.documents.compactMap{ document in

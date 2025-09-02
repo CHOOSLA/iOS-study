@@ -62,7 +62,7 @@ struct VoteListView: View {
         if let vote = voteToEdit {
           VoteEditorView(vote: vote) { updatedVote, selectedImage in
             Task{
-              await voteViewModel.updateVote(vote, image: selectedImage)
+              await voteViewModel.updateVote(updatedVote, image: selectedImage)
             }
           }
         }
