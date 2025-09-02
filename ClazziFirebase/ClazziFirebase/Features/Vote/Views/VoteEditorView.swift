@@ -43,6 +43,19 @@ struct VoteEditorView: View {
                     .stroke(Color.gray, lineWidth: 1)
                 )
                 .padding(.bottom, 32)
+              
+              // 이미지 뷰
+              Button(action: {}){
+                Image(systemName: "photo.fill")
+                  .resizable()
+                  .scaledToFill()
+                  .foregroundStyle(.gray)
+              }
+              .frame(width: 150, height: 150)
+              .clipShape(Circle())
+              .shadow(radius: 4)
+              .frame(maxWidth: .infinity, alignment: .center)
+              .padding(.bottom, 32)
               Text("투표 항목")
                 .font(.headline)
               
