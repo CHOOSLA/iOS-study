@@ -16,10 +16,13 @@ struct VoteEditorView: View {
   
   // 투표 목록 화면에서 전달해줄 콜백 메서드
   var onSave : (Vote) -> Void
-
   
   private var vote: Vote? = nil
-
+  
+  
+  // 토스트 메시지
+  @State private var toastMessage: String? = nil
+  
   init(vote: Vote? = nil, onSave: @escaping (Vote) -> Void){
     self.onSave = onSave
     self.title = vote?.title ?? ""
@@ -29,72 +32,113 @@ struct VoteEditorView: View {
   
   var body: some View {
     NavigationStack {
-      VStack {
-        ScrollView {
-          VStack(alignment: .leading) {
-            TextField("투표 제목", text: $title)
-              .padding()
-              .background(
-                RoundedRectangle(cornerRadius: 8)
-                  .stroke(Color.gray, lineWidth: 1)
-              )
-              .padding(.bottom, 32)
-            Text("투표 항목")
-              .font(.headline)
-            
-            
-            ForEach(options.indices, id: \.self) { index in
-              TextField("항목 \(index + 1)", text: $options[index])
+      ZStack{
+        VStack {
+          ScrollView {
+            VStack(alignment: .leading) {
+              TextField("투표 제목", text: $title)
                 .padding()
                 .background(
                   RoundedRectangle(cornerRadius: 8)
                     .stroke(Color.gray, lineWidth: 1)
                 )
+                .padding(.bottom, 32)
+              Text("투표 항목")
+                .font(.headline)
+              
+              
+              ForEach(options.indices, id: \.self) { index in
+                HStack{
+                  TextField("항목 \(index + 1)", text: $options[index])
+                    .padding()
+                    .background(
+                      RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1)
+                    )
+                  
+                  Button(action : {
+                    options.remove(at: index)
+                  }){
+                    Image(systemName: "xmark")
+                  }
+                  .foregroundColor(.gray)
+                }
+                .padding(.bottom,8)
+              }
+              
+              
+              Button("항목 추가") {
+                options.append("")
+              }
+              .buttonStyle(.bordered)
+              .frame(maxWidth: .infinity, alignment: .trailing)
+              Spacer()
+              
+            }
+          }
+          .navigationTitle(Text("투표 \(vote == nil ? "생성" : "수정") 화면"))
+          
+          // 생성하기 버튼
+          Button(action: {
+            // 투포 제목검사
+            // 타이틀 앞뒤 공백(개행무자 포함) 제거
+            let title = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !title.isEmpty else {
+              toastMessage = "제목을 제대로 입력해주세요."
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+                withAnimation {
+                  toastMessage = nil
+                }
+              }
+              return
             }
             
-            
-            Button("항목 추가") {
-              options.append("")
+            // 투표 항목 검사
+            let options = options.map { option in
+              option.trimmingCharacters(in: .whitespacesAndNewlines)
+            }.filter {
+              !$0.isEmpty
             }
-            .buttonStyle(.bordered)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            Spacer()
+            guard options.count >= 2 else {
+              toastMessage = "투표 항목은 빈 칸을 제외한 두 개 이상이어야 합니다."
+              DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+                withAnimation {
+                  toastMessage = nil
+                }
+              }
+              return
+            }
             
+            if var vote = vote{
+              // 기존 객체를 직접 수정
+              vote.title = title
+              
+              // 기존 옵션 삭제 후 새로 생성
+              vote.options = options.map { VoteOption(name: $0) }
+              onSave(vote)
+            }else{
+              // 새 객체 생성
+              let newVote = Vote(title: title,createdBy: session.user?.uid ?? "", options: options.map{ VoteOption(name: $0)})
+              onSave(newVote)
+            }
+            
+            print("실행됨")
+            dismiss()
+          }) {
+            Text(vote == nil ? "생성하기" : "수정하기")
+              .frame(maxWidth: .infinity)
+              .padding()
+              .background(.blue)
+              .foregroundColor(.white)
+              .cornerRadius(8)
           }
         }
-        .navigationTitle(Text("투표 \(vote == nil ? "생성" : "수정") 화면"))
         
-        // 생성하기 버튼
-        Button(action: {
-//          let newOptions = options.map{
-//            VoteOption(name: $0)
-//          }
-//          let vote = Vote(title: title, options: newOptions)
-//          onSave(vote)
-          if var vote = vote{
-            // 기존 객체를 직접 수정
-            vote.title = title
-            
-            // 기존 옵션 삭제 후 새로 생성
-            vote.options = options.map { VoteOption(name: $0) }
-            onSave(vote)
-          }else{
-            // 새 객체 생성
-            let newVote = Vote(title: title,createdBy: session.user?.uid ?? "", options: options.map{ VoteOption(name: $0)})
-            onSave(newVote)
-          }
-          
-          print("실행됨")
-          dismiss()
-        }) {
-          Text(vote == nil ? "생성하기" : "수정하기")
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(.blue)
-            .foregroundColor(.white)
-            .cornerRadius(8)
+        if let toastMessage = toastMessage {
+          ToastView(message: toastMessage, position: .middle)
         }
       }
+      
       .padding()
     }
   }
@@ -110,7 +154,7 @@ struct VoteEditorView: View {
 //    VoteOption(name: "옵션 1"),
 //    VoteOption(name: "옵션 2")
 //  ])
-//  
+//
 //  // 뷰에 샘플로 전달
 //  VoteEditorView(vote: sampleVote) { vote in
 //    print("변경된 투표: \(vote)")

@@ -84,6 +84,8 @@ struct VoteCardView: View {
   let onDelete: () -> Void
   let onEdit: () -> Void
   
+  @EnvironmentObject var session: UserSession
+  
   var body: some View {
     HStack(alignment: .top) {
       VStack(alignment: .leading) {
@@ -95,18 +97,21 @@ struct VoteCardView: View {
           .foregroundColor(.white)
       }
       Spacer()
-      Button(action: {
-        onEdit()
-      }) {
-        Image(systemName: "pencil")
-          .foregroundStyle(.white)
+      if let user = session.user, vote.createdBy == user.uid{
+        Button(action: {
+          onEdit()
+        }) {
+          Image(systemName: "pencil")
+            .foregroundStyle(.white)
+        }
+        Button(action: {
+          onDelete()
+        }) {
+          Image(systemName: "trash")
+            .foregroundStyle(.white)
+        }
       }
-      Button(action: {
-        onDelete()
-      }) {
-        Image(systemName: "trash")
-          .foregroundStyle(.white)
-      }
+      
     }
     .padding(16)
     .frame(maxWidth: .infinity, alignment: .leading)
